@@ -1,5 +1,6 @@
 #include <LPC17xx.h>
 #include <uart_polling.h>
+#include "rtx.h"
 
 int main() {
     SystemInit();
