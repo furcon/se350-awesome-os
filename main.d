@@ -6,3 +6,4 @@ main.o: C:\Software\Keil\ARM\CMSIS\Include\core_cmInstr.h
 main.o: C:\Software\Keil\ARM\CMSIS\Include\core_cmFunc.h
 main.o: C:\Software\Keil\ARM\Inc\NXP\LPC17xx\system_LPC17xx.h
 main.o: .\resources\manual_code\UART_polling\uart_polling.h
+main.o: rtx.h
