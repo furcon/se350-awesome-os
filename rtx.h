@@ -9,6 +9,7 @@
 #define RTX_ERR -1
 #define NULL 0
 #define NUM_TEST_PROCS 6
+#define MEM_BLOCK_SIZE 128;
 
 /* Process Priority. The bigger the number is, the lower the priority is*/
 #define HIGH    0
@@ -43,7 +44,7 @@ typedef unsigned int U32;
 
 /* initialization table item */
 typedef struct proc_init
-{	
+{
 	int m_pid;	        /* process id */ 
 	int m_priority;         /* initial priority, not used in this example. */ 
 	int m_stack_size;       /* size of stack in words */
@@ -79,11 +80,10 @@ extern int k_set_process_priority(int pid, int prio);
 #define set_process_priority(pid, prio) _set_process_priority((U32)k_set_process_priority, pid, prio)
 extern int _set_process_priority(U32 p_func, int pid, int prio) __SVC_0;
 
-/* Memeory Management */
+/* Memory Management */
 extern void *k_request_memory_block(void);
 #define request_memory_block() _request_memory_block((U32)k_request_memory_block)
 extern void *_request_memory_block(U32 p_func) __SVC_0;
-
 
 extern int k_release_memory_block(void *);
 #define release_memory_block(p_mem_blk) _release_memory_block((U32)k_release_memory_block, p_mem_blk)
