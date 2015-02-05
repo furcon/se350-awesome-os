@@ -15,7 +15,7 @@
 ### ADS-LD Output File: 'rtx.axf'
 ### ADS-LD Command File: 'rtx.lnp'
 ### Checking for dirty Components...
-### Creating CmdFile 'rtx.lnp', Handle=0x000003E0
+### Creating CmdFile 'rtx.lnp', Handle=0x00000DC0
 ### Writing '.lnp' file
 ### ADS-LD Command file 'rtx.lnp' is ready.
 ### ADS-LD: About to start ADS-LD Thread.

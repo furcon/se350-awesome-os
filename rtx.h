@@ -45,7 +45,7 @@ typedef unsigned int U32;
 /* initialization table item */
 typedef struct proc_init
 {
-	int m_pid;	        /* process id */ 
+	int m_pid;	            /* process id */ 
 	int m_priority;         /* initial priority, not used in this example. */ 
 	int m_stack_size;       /* size of stack in words */
 	void (*mpf_start_pc) ();/* entry point of the process */    
@@ -103,3 +103,5 @@ extern int k_delayed_send(int pid, void *p_msg, int delay);
 #define delayed_send(pid, p_msg, delay) _delayed_send((U32)k_delayed_send, pid, p_msg, delay)
 extern int _delayed_send(U32 p_func, int pid, void *p_msg, int delay) __SVC_0;  
 #endif /* !RTX_H_ */
+
+extern void initProcs(void (**procs)(), int *prios);
