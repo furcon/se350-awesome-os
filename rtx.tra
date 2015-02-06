@@ -6,8 +6,9 @@
 ### List of Objects: adding '"uart_polling.o"'
 ### List of Objects: adding '"main.o"'
 ### List of Objects: adding '"rtx.o"'
+### List of Objects: adding '"procs.o"'
 ### ADS-LD Command completed:
---cpu Cortex-M3 "startup_lpc17xx.o" "system_lpc17xx.o" "uart_polling.o" "main.o" "rtx.o" 
+--cpu Cortex-M3 "startup_lpc17xx.o" "system_lpc17xx.o" "uart_polling.o" "main.o" "rtx.o" "procs.o" 
 --strict --scatter "rtx.sct" 
 --summary_stderr --info summarysizes --map --xref --callgraph --symbols 
 --info sizes --info totals --info unused --info veneers 
@@ -15,7 +16,7 @@
 ### ADS-LD Output File: 'rtx.axf'
 ### ADS-LD Command File: 'rtx.lnp'
 ### Checking for dirty Components...
-### Creating CmdFile 'rtx.lnp', Handle=0x00000DC0
+### Creating CmdFile 'rtx.lnp', Handle=0x0000090C
 ### Writing '.lnp' file
 ### ADS-LD Command file 'rtx.lnp' is ready.
 ### ADS-LD: About to start ADS-LD Thread.

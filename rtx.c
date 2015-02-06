@@ -1,74 +1,6 @@
 #include "rtx.h"
-/********* TO BE PUT IN ITS OWN FILE *********/
-#define NUM_PROCS 10
-typedef struct ProcessTAG {
-    void (*proc)(); //TODO: also save return PC
-    int priority;
-    int index;//index in priority queue
-    int id;//index in pid queue
-} Process, *ProcessHANDLE;
+#include "procs.h"
 
-static Process procByPid[NUM_PROCS];
-static Process procByPrio[NUM_PROCS];
-
-
-void removeProcessFromQueue(int pid)
-{
-    Process proc=procByPid[pid];
-    int i;
-    for (i=proc.index; i<NUM_PROCS-1; ++i)
-        procByPrio[i]=procByPrio[i+1];
-    procByPrio[NUM_PROCS-1]=proc;//Technically pid is at the end, but it is out of place and will be knocked off on add
-}
-
-void addProcessToQueue(int pid)
-{
-    Process proc=procByPid[pid];
-
-    int i,ii;
-    for (i=0; i<NUM_PROCS; ++i)
-    {
-        if (procByPrio[i].priority>=proc.priority)
-            break;
-    }//'i' set by for loop above, used by for below
-    //Now i is the correct index for insertion
-    for (ii=NUM_PROCS-1; ii>i; --ii)
-        if (ii>0)
-            procByPrio[ii]=procByPrio[ii-1];
-    procByPrio[i]=proc;
-}
-
-int getPriority(int pid)
-{
-    return procByPid[pid].priority;
-}
-Process* currentProc(void)
-{
-    return &procByPrio[0];
-}
-int currentPid(void)
-{
-    return procByPrio[0].id;
-}
-Process *getProc(int pid)
-{
-    return &procByPrio[pid];
-}
-//initProcs will be called from k_rtx_int
-void initProcs(void (*procs[])(), int prios[])
-{  
-    int i;
-    for (i=0; i<NUM_PROCS; ++i)
-    {
-        procByPrio[i].id=procByPid[i].id=i;
-        procByPrio[i].index=procByPid[i].index=i;
-        procByPrio[i].proc=procByPid[i].proc=procs[i];
-        procByPrio[i].priority=procByPid[i].priority=prios[i];
-    }
-    for (i=0; i<NUM_PROCS; ++i)
-        addProcessToQueue(i);
-}
-/*********************************************/
 #define AVAILABLE_MEM_END 0x10008000
 
 extern U32 Image$$RW_IRAM1$$ZI$$Limit;
@@ -82,7 +14,6 @@ mem_blk *availableMemory;
 
 
 void k_rtx_init(void) {
-    Process* currProc;
     U32 remainingMemoryStart;
     
     // Calculate number of available memory blocks
@@ -99,8 +30,7 @@ void k_rtx_init(void) {
         availableMemory = newBlock;
         remainingMemoryStart += MEM_BLOCK_SIZE;
     }
-    currProc=currentProc();
-    currProc->proc();
+    returnToCurrentContext();//run the first process
 }
 
 void *k_request_memory_block(void) {
@@ -144,37 +74,29 @@ int k_release_memory_block(void *memory_block) {
 }
 
 int k_release_processor(void) {
-    Process *ret;
-    int proc=currentPid();
-    removeProcessFromQueue(proc);
-    //fix ordering ?? 
-    addProcessToQueue(proc);
-    ret=currentProc();
-    //ret=procByPrio[1];
-    ret->proc();
+    int currPid=getCurrentPid();
+    removeProcessFromQueue(currPid);
+    addProcessToQueue(currPid);
+    returnToCurrentContext();
     
     return 0;
 }
 
 
 int k_set_process_priority(int pid, int prio) {
-    Process *p;
-    if (pid < 0 || pid >= NUM_PROCS || prio < 0 || prio > 3) {
+    if (pid < 0 || pid >= MAX_PROCS || prio < 0 || prio > 3) {
         return -1;
     }
-    p=getProc(pid);
     removeProcessFromQueue(pid);
-
-
-    p->priority=prio;
+    setProcessPriority(pid,prio);
     addProcessToQueue(pid);
     
     return 0;
 }
 
 int k_get_process_priority(int pid) {
-    if (pid < 0 || pid >= NUM_PROCS) {
+    if (pid < 0 || pid >= MAX_PROCS) {
         return -1;
     }
-    return getPriority(pid);
+    return getProcessPriority(pid);
 }

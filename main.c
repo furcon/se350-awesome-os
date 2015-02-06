@@ -15,23 +15,29 @@ void printInt(int x) {
     }
     uart0_put_string("\n\r");
 }
-void nullproc(void) { while (1) release_processor(); }
-void print1(void) {while (1) { printInt(1); k_release_processor();} }
-void print2(void) {while (1) { printInt(2); k_release_processor();} }
+void nullproc(void) { while (1) k_release_processor(); }
+void print1(void) {
+    while (1) {
+        printInt(1);
+        k_release_processor();
+    }
+}
+void print2(void) {
+    while (1) {
+        printInt(2);
+        k_release_processor();
+    }
+}
 int main() {
     int* test;
     
-    void (*procs[])()={nullproc,print1,print2,print1,print1,
-                       print2,print2,print2,print2,print2};
-    int prios[]={4,0,1,1,1,0,1,1,1,1};
+    void (*procs[])()={nullproc,print1,print2};
+    int prios[]={4,2,1};
     
     SystemInit();
     uart0_init();
     uart0_put_string("Hello World!\n\r");
-    printInt(12251212);
-    printInt(12251212);
-    printInt(12251212);
-     
+
     initProcs(procs,prios);
     k_rtx_init();
     test = k_request_memory_block();
